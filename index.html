@@ -2,44 +2,57 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My AI Tools</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BEMAGE - BeChat AI</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
-    <h1>🔮 My AI Tools</h1>
-    <p>Discover the best free AI tools online!</p>
+    <h1>🤖 BEMAGE</h1>
+    <p>Welcome to BeChat – your smart AI chatbot</p>
   </header>
 
   <main>
-    <section class="tool">
-      <h2>💬 Chat Tools</h2>
-      <ul>
-        <li><a href="https://chat.openai.com" target="_blank">ChatGPT</a></li>
-        <li><a href="https://bard.google.com" target="_blank">Google Bard</a></li>
-      </ul>
-    </section>
-
-    <section class="tool">
-      <h2>🎨 Image Tools</h2>
-      <ul>
-        <li><a href="https://openai.com/dall-e" target="_blank">DALL·E</a></li>
-        <li><a href="https://www.craiyon.com" target="_blank">Craiyon</a></li>
-      </ul>
-    </section>
-
-    <section class="tool">
-      <h2>🎙 Voice Tools</h2>
-      <ul>
-        <li><a href="https://elevenlabs.io" target="_blank">ElevenLabs</a></li>
-        <li><a href="https://play.ht" target="_blank">Play.ht</a></li>
-      </ul>
+    <section class="chatbox">
+      <div id="chat-output">
+        <p><strong>BeChat:</strong> Hello! How can I help you today?</p>
+      </div>
+      <input type="text" id="user-input" placeholder="Type your message..." />
+      <button onclick="sendMessage()">Send</button>
     </section>
   </main>
 
   <footer>
-    <p>Made with ❤️ by Suhaan</p>
+    <p>Powered by BeChat • Created by YOU</p>
   </footer>
+
+  <script>
+    async function sendMessage() {
+      const input = document.getElementById("user-input");
+      const output = document.getElementById("chat-output");
+
+      const userMessage = input.value.trim();
+      if (!userMessage) return;
+
+      output.innerHTML += `<p><strong>You:</strong> ${userMessage}</p>`;
+      input.value = "";
+
+      output.innerHTML += `<p><strong>BeChat:</strong> <em>Typing...</em></p>`;
+      output.scrollTop = output.scrollHeight;
+
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userMessage })
+      });
+
+      const data = await res.json();
+      const botReply = data.reply;
+
+      const beChatResponse = `<p><strong>BeChat:</strong> ${botReply}</p>`;
+      output.innerHTML = output.innerHTML.replace(/<em>Typing\.\.\.<\/em>/, botReply);
+      output.scrollTop = output.scrollHeight;
+    }
+  </script>
 </body>
 </html>
